@@ -59,10 +59,10 @@ func GetFrogByName(Frog operations.GetFrogNameParams) middleware.Responder {
 
 	var URL string
 	if Frog.Name != "" {
-		URL = "https://github.com/togdon/Frogs/raw/main/" + Frog.Name + ".png"
+		URL = "https://github.com/togdon/frogbot/raw/main/frogs/" + Frog.Name + ".png"
 	} else {
-		//by default we return dr who Frog
-		URL = "https://github.com/togdon/Frogs/raw/main/dr-who.png"
+		//by default we return Frogboss
+		URL = "https://github.com/togdon/frogbot/raw/main/frogs/frogboss.png"
 	}
 
 	response, err := http.Get(URL)
