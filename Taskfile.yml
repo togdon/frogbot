@@ -4,17 +4,17 @@ tasks:
     build:
         desc: Build the app
         cmds:
-        - GOFLAGS=-mod=mod go build -o bin/frogbot internal/main.go
+        - GOFLAGS=-mod=mod go build -o bin/frogbot api/main.go
 
     run:
         desc: Run the app
         cmds:
-        - GOFLAGS=-mod=mod go run internal/main.go
+        - GOFLAGS=-mod=mod go run api/main.go
 
     swagger.gen:
         desc: Generate Go code
         cmds:
-        - GOFLAGS=-mod=mod go generate github.com/togdon/frogbot/internal github.com/togdon/frogbot/pkg/swagger
+        - GOFLAGS=-mod=mod go generate github.com/togdon/frogbot/api github.com/togdon/frogbot/pkg/swagger
 
     swagger.validate:
         desc: Validate swagger
