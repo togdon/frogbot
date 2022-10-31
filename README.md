@@ -1,2 +1,3 @@
-# frogbot
-Everyone needs a frogbot
+# Frogbot
+
+Everyone needs a frogbot.

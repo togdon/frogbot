@@ -4,11 +4,11 @@ WORKDIR /go/src/frogbot
 COPY . .
 
 RUN go mod download
-RUN go vet -v
-RUN go test -v
+#RUN go vet -v
+#RUN go test -v
 
 RUN ls /go/src/frogbot
-RUN CGO_ENABLED=0 go build -o /go/bin/frogbot bot/main.go
+RUN CGO_ENABLED=0 go build -o /go/bin/frogbot ./bot
 
 FROM gcr.io/distroless/static-debian11
 
