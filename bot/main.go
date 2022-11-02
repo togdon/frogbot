@@ -66,7 +66,31 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	for _, user := range m.Mentions {
 		if user.ID == s.State.User.ID {
-			s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Hello <@%v>! It's me %v, ready to serve!", m.Author.ID, user.Username))
+
+			bil := regexp.MustCompile(`(?i)what is best in life`)
+
+			if bil.MatchString(m.Content) {
+
+				//To [verb] your [noun], to see them [pparticiple] [preposition] you, and
+				//to [sense] the [singular] of their [kinfolk].
+
+				s1 := rand.NewSource(time.Now().UnixNano())
+				r1 := rand.New(s1)
+
+				verb := []string{"abolish", "blot out", "crush", "decimate", "demolish", "eradicate", "erase", "exterminate", "extinguish", "massacre", "obliterate", "quash", "quell", "raze", "slaughter", "take out", "wipe out"}
+				noun := []string{"adversaries", "antagonists", "assailants", "attackers", "competitors", "detractors", "enemies", "foes", "invaders", "opponents", "opposition", "rivals"}
+				pparticiple := []string{"driven", "consumed", "forced", "herded", "possessed"}
+				preposition := []string{"above", "across", "among", "at", "before", "beneath", "beside", "between", "by", "down", "in", "in front of", "on", "over", "through", "to", "up", "with"}
+				sense := []string{"hear", "see", "smell", "taste", "touch"}
+				singular := []string{"lamentations", "complaints", "dirges", "elegies", "keenings", "laments", "moanings", "mournings", "requiems", "sobs", "tears", "ululations", "wails"}
+				kinfolk := []string{"fuckbois", "women", "children", "cats", "dogs", "Great Aunt Mildred", "Crazy Uncle Ernie"}
+
+				response := fmt.Sprintf("To %s your %s, to see them %s %s you, and to %s the %s of their %s.", verb[r1.Intn(len(verb))], noun[r1.Intn(len(noun))], pparticiple[r1.Intn(len(pparticiple))], preposition[r1.Intn(len(preposition))], sense[r1.Intn(len(sense))], singular[r1.Intn(len(singular))], kinfolk[r1.Intn(len(kinfolk))])
+
+				s.ChannelMessageSend(m.ChannelID, response)
+			} else {
+				s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Hello <@%v>! It's me %v, ready to serve!", m.Author.ID, user.Username))
+			}
 		}
 	}
 
