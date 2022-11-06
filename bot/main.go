@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"regexp"
+	"strings"
 	"syscall"
 	"time"
 
@@ -245,14 +246,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				//To [verb] your [noun], to see them [pparticiple] [preposition] you, and
 				//to [sense] the [singular] of their [kinfolk].
 
-				verb := []string{"abolish", "blot out", "crush", "decimate", "demolish", "eradicate", "erase", "exterminate", "extinguish", "massacre", "obliterate", "quash", "quell", "raze", "slaughter", "take out", "wipe out"}
+				verb := []string{"crush", "decimate", "demolish", "eradicate", "erase", "exterminate", "extinguish", "massacre", "obliterate", "quash", "quell", "raze", "slaughter", "smush", "tickle", "wipe out"}
 				noun := []string{"adversaries", "antagonists", "assailants", "attackers", "competitors", "detractors", "enemies", "foes", "invaders", "opponents", "opposition", "rivals"}
-				pparticiple := []string{"driven", "consumed", "forced", "herded", "possessed"}
-				preposition := []string{"above", "across", "among", "at", "before", "beneath", "beside", "between", "by", "down", "in", "in front of", "on", "over", "through", "to", "up", "with"}
+				pparticiple := []string{"arisen", "awoken", "beaten", "bespoken", "bitten", "blown", "broken", "cast", "chosen", "drawn", "drawn", "driven", "eaten", "forgotten", "frozen", "hidden", "ridden", "shaken", "smitten", "thrust"}
+				preposition := []string{"above", "across", "among", "at", "before", "beneath", "beside", "between", "by", "down", "in", "in front of", "over", "through", "with"}
 				sense := []string{"hear", "see", "smell", "taste", "touch"}
 				singular := []string{"lamentations", "complaints", "dirges", "elegies", "keenings", "laments", "moanings", "mournings", "requiems", "sobs", "tears", "ululations", "wails"}
 				kinfolk := []string{"fuckbois", "women", "children", "cats", "dogs", "Great Aunt Mildred", "Crazy Uncle Ernie"}
-
 				response := fmt.Sprintf("To %s your %s, to see them %s %s you, and to %s the %s of their %s.", verb[r1.Intn(len(verb))], noun[r1.Intn(len(noun))], pparticiple[r1.Intn(len(pparticiple))], preposition[r1.Intn(len(preposition))], sense[r1.Intn(len(sense))], singular[r1.Intn(len(singular))], kinfolk[r1.Intn(len(kinfolk))])
 
 				s.ChannelMessageSend(m.ChannelID, response)
@@ -283,7 +283,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	yelling := regexp.MustCompile(`^\P{L}*\p{Lu}\P{Ll}*$`)
 
 	if yelling.MatchString(m.Content) && m.Content != "LOL" && m.Content != "WTF" {
-		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Hey <@%v>, there's no need to yell.", m.Author.ID))
+		s.ChannelMessageSend(m.ChannelID, shh(m.Content, m.Author.ID))
 	}
 
 	// If the message is "ping" reply with "Pong!"
@@ -300,4 +300,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// https://github.com/bwmarrin/discordgo/blob/master/examples/slash_commands/main.go
 	// https://github.com/montanaflynn/meme-generator/blob/master/main.go
 
+}
+
+func shh(message string, author string) string {
+	return fmt.Sprintf("Hey <@%s>, there's no need to yell. \"%s\" works just as well", author, strings.Title(strings.ToLower(message)))
 }
