@@ -283,7 +283,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	yelling := regexp.MustCompile(`^\P{L}*\p{Lu}\P{Ll}*$`)
 
 	if yelling.MatchString(m.Content) && m.Content != "LOL" && m.Content != "WTF" {
-		s.ChannelMessageSend(m.ChannelID, shh(m.Content, m.Author.ID))
+		// s.ChannelMessageSend(m.ChannelID, shh(m.Content, m.Author.ID))
+		// Markov in the future, for now nothing
 	}
 
 	// If the message is "ping" reply with "Pong!"
