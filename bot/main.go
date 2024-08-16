@@ -6,11 +6,12 @@ import (
 	"os"
 	"os/signal"
 	"regexp"
-	"strings"
 	"syscall"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 var frogs []string
@@ -31,7 +32,7 @@ func main() {
 	// We need information about guilds and messages
 	bot.Identify.Intents = discordgo.IntentsAll
 
-	// Open the websocket and begin listening.
+	// Open the websocket and begin listening
 	err = bot.Open()
 	if err != nil {
 		panic(fmt.Sprintf("Error opening Discord session: %v", err))
@@ -283,13 +284,15 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	yelling := regexp.MustCompile(`^\P{L}*\p{Lu}\P{Ll}*$`)
 
 	if yelling.MatchString(m.Content) && m.Content != "LOL" && m.Content != "WTF" {
-		// s.ChannelMessageSend(m.ChannelID, shh(m.Content, m.Author.ID))
+		s.ChannelMessageSend(m.ChannelID, shh(m.Content, m.Author.ID))
 		// Markov in the future, for now nothing
 	}
 
-	// If the message is "ping" reply with "Pong!"
+	// If the message is "ping" reply with "Ping: " and a random digit between 1 and 10
 	// if m.Content == "ping" {
-	// 	s.ChannelMessageSend(m.ChannelID, "Pong!")
+	// 	s1 := rand.NewSource(time.Now().UnixNano())
+	// 	r1 := rand.New(s1)
+	// 	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Ping: %d", r1.Intn(10)+1))
 	// }
 	// If the message is "pong" reply with "Ping!"
 	// if m.Content == "pong" {
@@ -300,9 +303,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// https://huggingface.co/facebook/blenderbot-400M-distill?text=Hey+my+name+is+Julien%21+How+are+you%3F
 	// https://github.com/bwmarrin/discordgo/blob/master/examples/slash_commands/main.go
 	// https://github.com/montanaflynn/meme-generator/blob/master/main.go
-
 }
 
 func shh(message string, author string) string {
-	return fmt.Sprintf("Hey <@%s>, there's no need to yell. \"%s\" works just as well", author, strings.Title(strings.ToLower(message)))
+	c := cases.Title(language.English)
+
+	return fmt.Sprintf("Hey <@%s>, there's no need to yell. \"%s\" works just as well", author, c.StringToLower(message))
 }
