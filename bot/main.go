@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"regexp"
+	"strings"
 	"syscall"
 	"time"
 
@@ -308,5 +309,5 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 func shh(message string, author string) string {
 	c := cases.Title(language.English)
 
-	return fmt.Sprintf("Hey <@%s>, there's no need to yell. \"%s\" works just as well", author, c.StringToLower(message))
+	return fmt.Sprintf("Hey <@%s>, there's no need to yell. \"%s\" works just as well", author, c.String(strings.ToLower(message)))
 }
