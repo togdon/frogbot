@@ -28,7 +28,7 @@ func main() {
 		panic("No token provided.")
 	}
 
-	// Create a new Discord session using the provided bot token.
+	// Create a new Discord session using the provided bot token
 	bot, err := discordgo.New("Bot " + token)
 	if err != nil {
 		panic(fmt.Sprintf("Error creating Discord session: %v", err))
@@ -43,16 +43,18 @@ func main() {
 		panic(fmt.Sprintf("Error opening Discord session: %v", err))
 	}
 
-	// Add handlers for the bot for message creation and reaction creation
+	// Add handlers for the bot for message creation and reaction creation/removal
+	// https://discord.com/developers/docs/topics/gateway-events#receive-events
 	bot.AddHandler(messageCreate)
 	bot.AddHandler(messageReactionAdd)
+	bot.AddHandler(messageReactionRemove)
 
-	// Wait here until CTRL-C or other term signal is received.
+	// Wait here until CTRL-C or other term signal is received
 	fmt.Printf("Frogbot is now running; I currently know about %v frogs. Press CTRL-C to exit.\n", len(frogs))
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
-	// Cleanly close down the Discord session.
+	// Cleanly close down the Discord session
 	bot.Close()
 }

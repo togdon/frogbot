@@ -12,6 +12,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+// messageCreate is called whenever a message is created
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
 	if m.Author.ID == s.State.User.ID {
@@ -19,7 +20,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// Log all messages received
-	fmt.Printf("%v (%v) wrote: %v\n", m.Author, m.Author.ID, m.Content)
+	channel, _ := s.Channel(m.ChannelID)
+	fmt.Printf("%s wrote: \"%s\" in %s\n", m.Author, m.Content, channel.Name)
 
 	// Parse the message for mentions...
 	for _, user := range m.Mentions {
@@ -30,7 +32,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	}
 
-	// If the message is the request to "frog me"
+	// If the message is a request to "frog me"
 	frogme := regexp.MustCompile(`(?i)Frog me`)
 	if frogme.MatchString(m.Content) {
 		s1 := rand.NewSource(time.Now().UnixNano())
