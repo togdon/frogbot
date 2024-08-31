@@ -50,7 +50,7 @@ func main() {
 	bot.AddHandler(messageReactionRemove)
 
 	// Wait here until CTRL-C or other term signal is received
-	fmt.Printf("Frogbot is now running; I currently know about %v frogs. Press CTRL-C to exit.\n", len(frogs))
+	fmt.Printf("Frogbot is now running\nI currently know about %v frogs\nPress CTRL-C to exit.\n", len(frogs))
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc

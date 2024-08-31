@@ -21,7 +21,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Log all messages received
 	channel, _ := s.Channel(m.ChannelID)
-	fmt.Printf("%s wrote: \"%s\" in %s\n", m.Author, m.Content, channel.Name)
+	if channel.Name != "" {
+		fmt.Printf("%s wrote: \"%s\" in %s\n", m.Author, m.Content, channel.Name)
+	} else {
+		fmt.Printf("%s DM'd: \"%s\"\n", m.Author, m.Content)
+	}
 
 	// Parse the message for mentions...
 	for _, user := range m.Mentions {
@@ -33,8 +37,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// If the message is a request to "frog me"
-	frogme := regexp.MustCompile(`(?i)Frog me`)
+	frogme := regexp.MustCompile(`(?i)frog me`)
+	fff := regexp.MustCompile(`(?i)(fun\b|frog\b|fact\b)`)
 	if frogme.MatchString(m.Content) {
+		// send a random frog image
 		s1 := rand.NewSource(time.Now().UnixNano())
 		r1 := rand.New(s1)
 
@@ -44,6 +50,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			panic(fmt.Sprintf("Error opening file: %v", err))
 		}
 		s.ChannelFileSend(m.ChannelID, frog_file, f)
+	} else if fff.MatchString(m.Content) {
+		// send a random frog fact
+		response := responses.FunFrogFact()
+		s.ChannelMessageSend(m.ChannelID, response)
 	}
 
 	// If the message is in all caps...

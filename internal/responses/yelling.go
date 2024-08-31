@@ -37,7 +37,8 @@ func YellingResponse(message string, author string) string {
 		return "Whatever I was about to say was too naughty for me to say out loud. (For free)."
 	}
 
-	responseText := fmt.Sprintf("Hey <@%s>! ", author)
+	// responseText := fmt.Sprintf("Hey <@%s>! ", author)
+	responseText := ""
 	for _, candidate := range response.Candidates {
 		if candidate.Content != nil {
 			for _, part := range candidate.Content.Parts {
