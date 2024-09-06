@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"os"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/togdon/frogbot/internal/responses"
@@ -38,7 +39,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// If the message is a request to "frog me"
 	frogme := regexp.MustCompile(`(?i)frog me`)
-	fff := regexp.MustCompile(`(?i)(fun\b|frog\b|fact\b)`)
+	fff := regexp.MustCompile(`(?i)(fun\b|frog[s]?\b|fact\b)`)
 	if frogme.MatchString(m.Content) {
 		// send a random frog image
 		s1 := rand.NewSource(time.Now().UnixNano())
@@ -51,9 +52,23 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 		s.ChannelFileSend(m.ChannelID, frog_file, f)
 	} else if fff.MatchString(m.Content) {
+		// the mesage contains "fun", "frog[s]?", or "fact", so...
 		// send a random frog fact
+		match := strings.ToLower(fff.FindString(m.Content))
 		response := responses.FunFrogFact()
-		s.ChannelMessageSend(m.ChannelID, response)
+		message := ""
+		switch match {
+		case "fun":
+			message = "**Fun** frog fact: "
+		case "frog", "frogs":
+			message = "Fun **frog** fact: "
+		case "fact":
+			message = "Fun frog **fact**: "
+		default:
+			message = fmt.Sprintf("||Oh noes... You got here through \"%s\"|| Here's a fun frog fact: ", match)
+		}
+		message += response
+		s.ChannelMessageSend(m.ChannelID, message)
 	}
 
 	// If the message is in all caps...
