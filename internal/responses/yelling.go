@@ -23,7 +23,7 @@ func YellingResponse(message string, author string) string {
 	}
 	defer client.Close()
 
-	model := client.GenerativeModel("gemini-1.5-flash")
+	model := client.GenerativeModel("gemini-2.0-flash")
 	// https://ai.google.dev/gemini-api/docs/text-generation?lang=go#configure
 	model.SetTemperature(1.75)
 	// model.SetTopP(0.5)
