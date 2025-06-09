@@ -7,63 +7,54 @@ import (
 	"os"
 	"strings"
 
-	"github.com/google/generative-ai-go/genai"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
-	"google.golang.org/api/option"
+	"google.golang.org/genai"
 )
 
 // YellingResponse generates a response to a message that is in all caps
 func YellingResponse(message string, author string) string {
 
 	ctx := context.Background()
-	client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_API_KEY")))
+	client, err := genai.NewClient(ctx, &genai.ClientConfig{
+		APIKey:  os.Getenv("GEMINI_API_KEY"),
+		Backend: genai.BackendGeminiAPI,
+	})
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Close()
-
-	model := client.GenerativeModel("gemini-2.5-flash-preview-04-17")
-	// https://ai.google.dev/gemini-api/docs/text-generation?lang=go#configure
-	model.SetTemperature(1.75)
-	// model.SetTopP(0.5)
-	model.SetTopK(5)
-	model.SetMaxOutputTokens(100)
-	model.SystemInstruction = genai.NewUserContent(genai.Text("You are a frog and can respond to messages that are yelled in US English"))
-
-	response, err := model.GenerateContent(ctx, genai.Text(message))
-	if err != nil {
-		log.Print(err)
-		return "Whatever I was about to say was too naughty for me to say out loud. (For free)."
+		log.Println(err)
 	}
 
-	// responseText := fmt.Sprintf("Hey <@%s>! ", author)
-	responseText := ""
-	for _, candidate := range response.Candidates {
-		if candidate.Content != nil {
-			for _, part := range candidate.Content.Parts {
-				responseText += fmt.Sprintf("%v", part)
-			}
-		}
-	}
-	return responseText
+	// Uncomment to dump the list of current models...
+	// listconfig := &genai.ListModelsConfig{}
 
-	// ctx := context.Background()
-	// apiKey := os.Getenv("GEMINI_API_KEY")
-	// llm, err := googleai.New(ctx, googleai.WithAPIKey(apiKey))
+	// models, err := client.Models.List(ctx, listconfig)
 	// if err != nil {
-	// 	log.Fatal(err)
+	// 	log.Println(err)
 	// }
 
-	// prompt := "You are a frog and can respond to messages that are yelled in US English. A human has yelled this at you: \""
-	// prompt += message
-	// prompt += "\". Respond in a way that is appropriate for a frog, without yelling."
-	// answer, err := llms.GenerateFromSinglePrompt(ctx, llm, prompt)
-	// if err != nil {
-	// 	log.Fatal(err)
+	// for _, model := range models.Items {
+	// 	fmt.Println(model.Name)
 	// }
 
-	// return answer
+	config := &genai.GenerateContentConfig{
+		SystemInstruction: genai.NewContentFromText("You are a frog. Your name is FrogBot", genai.RoleUser),
+		MaxOutputTokens:   int32(100),
+	}
+
+	result, err := client.Models.GenerateContent(
+		ctx,
+		"gemini-2.0-flash",
+		genai.Text(message),
+		config,
+	)
+
+	if err != nil {
+		log.Println(err)
+		return ""
+
+	} else {
+		return result.Text()
+	}
 }
 
 // shh generates a response to a message that is in all caps
