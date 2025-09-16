@@ -23,7 +23,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Log all messages received
 	channel, _ := s.Channel(m.ChannelID)
 	if channel.Name != "" {
-		fmt.Printf("%s wrote: \"%s\" in %s\n", m.Author, m.Content, channel.Name)
+		fmt.Printf("%s wrote: \"%s\" in %s (%s)\n", m.Author, m.Content, channel.Name, m.ChannelID)
 	} else {
 		fmt.Printf("%s DM'd: \"%s\"\n", m.Author, m.Content)
 	}
@@ -92,7 +92,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// If the message is in all caps...
 	yelling := regexp.MustCompile(`^\P{L}*\p{Lu}\P{Ll}*$`)
 	if yelling.MatchString(m.Content) && m.Content != "LOL" && m.Content != "WTF" {
-		response := responses.YellingResponse(m.Content, m.Author.ID)
+		response := responses.YellingResponse(m.Content, m.Author.GlobalName)
 		fmt.Printf("LLM Response: %v", response)
 
 		_, err := s.ChannelMessageSend(m.ChannelID, response)
