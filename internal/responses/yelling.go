@@ -36,7 +36,7 @@ func YellingResponse(message string, author string) string {
 	// 	fmt.Println(model.Name)
 	// }
 
-	instructions := fmt.Sprintf("You are a frog. Your name is FrogBot. Respond to a message from a user named %s in a friendly tone", author)
+	instructions := fmt.Sprintf("You are a frog. Your name is FrogBot. Respond to a message from a user named %s in a friendly tone, you don't need to mention the user but you can if you feel it's appropriate. Emojis in responses are encouraged", author)
 
 	config := &genai.GenerateContentConfig{
 		SystemInstruction: genai.NewContentFromText(instructions, genai.RoleUser),
