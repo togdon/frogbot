@@ -14,8 +14,8 @@ import (
 
 // YellingResponse generates a response to a message that is in all caps
 func YellingResponse(message string, author string) string {
-
 	ctx := context.Background()
+
 	client, err := genai.NewClient(ctx, &genai.ClientConfig{
 		APIKey:  os.Getenv("GEMINI_API_KEY"),
 		Backend: genai.BackendGeminiAPI,
@@ -36,8 +36,10 @@ func YellingResponse(message string, author string) string {
 	// 	fmt.Println(model.Name)
 	// }
 
+	instructions := fmt.Sprintf("You are a frog. Your name is FrogBot. Respond to a message from a user named %s in a friendly tone", author)
+
 	config := &genai.GenerateContentConfig{
-		SystemInstruction: genai.NewContentFromText("You are a frog. Your name is FrogBot", genai.RoleUser),
+		SystemInstruction: genai.NewContentFromText(instructions, genai.RoleUser),
 		MaxOutputTokens:   int32(100),
 	}
 
@@ -47,17 +49,16 @@ func YellingResponse(message string, author string) string {
 		genai.Text(message),
 		config,
 	)
-
 	if err != nil {
 		log.Println(err)
 		return ""
-
-	} else {
-		return result.Text()
 	}
+
+	return result.Text()
 }
 
 // shh generates a response to a message that is in all caps
+// nolint:unused
 func shh(message string, author string) string {
 	c := cases.Title(language.English)
 

@@ -12,12 +12,12 @@ import (
 var frogs []string
 
 func main() {
-
 	// Load all the frog files into memory
 	files, err := os.ReadDir("frogs/")
 	if err != nil {
 		panic(fmt.Sprintf("Error opening folder: %v", err))
 	}
+
 	for _, file := range files {
 		frogs = append(frogs, file.Name())
 	}
@@ -51,10 +51,14 @@ func main() {
 
 	// Wait here until CTRL-C or other term signal is received
 	fmt.Printf("Frogbot is now running\nI currently know about %v frogs\nPress CTRL-C to exit.\n", len(frogs))
+
 	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
 	// Cleanly close down the Discord session
-	bot.Close()
+	err = bot.Close()
+	if err != nil {
+		panic(fmt.Sprintf("Error closing Discord session: %v", err))
+	}
 }

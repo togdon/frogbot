@@ -7,10 +7,9 @@ import (
 
 // FunFrogFact generates a response to a message that contains 'fun', 'frog', or 'fact'
 func FunFrogFact() string {
-
 	// Create a new random number generator
 	s1 := rand.NewSource(time.Now().UnixNano())
-	r1 := rand.New(s1)
+	r1 := rand.New(s1) // #nosec
 
 	facts := []string{"There is evidence that frogs have roamed the Earth for more than 200 million years. We're like little hoppy dinosaurs that lived through the unprovoked meteor attack on Chicxulub!",
 		"The world's largest frog is the goliath frog of West Africa—it can grow to 15 inches and weigh up to 7 pounds (that's 32cm or 3.3kg for people who don't fear science). It comes out at night and dines on fish, crabs, baby turtles, young snakes, and other vertebrates along the river’s edge. Its average life span in the wild is up to 15 years.",

@@ -14,7 +14,10 @@ func messageReactionAdd(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
 	}
 
 	if m.Emoji.Name == "🐸" {
-		s.ChannelMessageSend(m.ChannelID, "Ribbit!")
+		_, err := s.ChannelMessageSend(m.ChannelID, "Ribbit!")
+		if err != nil {
+			fmt.Printf("Error sending message: %v", err)
+		}
 	} else {
 		// log the emoji reactions
 		user, _ := s.User(m.UserID)
@@ -23,5 +26,4 @@ func messageReactionAdd(s *discordgo.Session, m *discordgo.MessageReactionAdd) {
 		fmt.Printf("%s reacted with %s to %s's message \"%s\" in %s\n",
 			user.Username, m.Emoji.Name, message.Author, message.Content, channel.Name)
 	}
-
 }

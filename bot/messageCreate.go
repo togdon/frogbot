@@ -33,42 +33,60 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// ... and if the mention is to the bot...
 		if user.ID == s.State.User.ID {
 			response := responses.MentionsResponse(m.Content)
-			s.ChannelMessageSend(m.ChannelID, response)
+
+			_, err := s.ChannelMessageSend(m.ChannelID, response)
+			if err != nil {
+				fmt.Printf("Error sending message: %v", err)
+			}
 		}
 	}
 
 	// If the message is a request to "frog me"
 	frogme := regexp.MustCompile(`(?i)frog me`)
+
 	fff := regexp.MustCompile(`(?i)(fun\b|frog[s]?\b|fact\b)`)
 	if frogme.MatchString(m.Content) {
 		// send a random frog image
 		s1 := rand.NewSource(time.Now().UnixNano())
-		r1 := rand.New(s1)
+		r1 := rand.New(s1) // #nosec
 
-		frog_file := frogs[r1.Intn(len(frogs))]
-		f, err := os.Open("frogs/" + frog_file)
+		frogFile := frogs[r1.Intn(len(frogs))]
+
+		f, err := os.Open("frogs/" + frogFile)
 		if err != nil {
 			panic(fmt.Sprintf("Error opening file: %v", err))
 		}
-		s.ChannelFileSend(m.ChannelID, frog_file, f)
-	} else if fff.MatchString(m.Content) {
-		// the mesage contains "fun", "frog[s]?", or "fact", so...
-		// send a random frog fact
-		match := strings.ToLower(fff.FindString(m.Content))
-		response := responses.FunFrogFact()
-		message := ""
-		switch match {
-		case "fun":
-			message = "**Fun** frog fact: "
-		case "frog", "frogs":
-			message = "Fun **frog** fact: "
-		case "fact":
-			message = "Fun frog **fact**: "
-		default:
-			message = fmt.Sprintf("||Oh noes... You got here through \"%s\"|| Here's a fun frog fact: ", match)
+
+		_, err = s.ChannelFileSend(m.ChannelID, frogFile, f)
+		if err != nil {
+			fmt.Printf("Error sending file: %v", err)
 		}
-		message += response
-		s.ChannelMessageSend(m.ChannelID, message)
+	} else if fff.MatchString(m.Content) {
+		if m.ChannelID != "rant_town_usa" {
+			// the mesage contains "fun", "frog[s]?", or "fact", so...
+			// send a random frog fact
+			match := strings.ToLower(fff.FindString(m.Content))
+			response := responses.FunFrogFact()
+			message := ""
+
+			switch match {
+			case "fun":
+				message = "**Fun** frog fact: "
+			case "frog", "frogs":
+				message = "Fun **frog** fact: "
+			case "fact":
+				message = "Fun frog **fact**: "
+			default:
+				message = fmt.Sprintf("||Oh noes... You got here through \"%s\"|| Here's a fun frog fact: ", match)
+			}
+
+			message += response
+
+			_, err := s.ChannelMessageSend(m.ChannelID, message)
+			if err != nil {
+				fmt.Printf("Error sending message: %v", err)
+			}
+		}
 	}
 
 	// If the message is in all caps...
@@ -76,6 +94,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if yelling.MatchString(m.Content) && m.Content != "LOL" && m.Content != "WTF" {
 		response := responses.YellingResponse(m.Content, m.Author.ID)
 		fmt.Printf("LLM Response: %v", response)
-		s.ChannelMessageSend(m.ChannelID, response)
+
+		_, err := s.ChannelMessageSend(m.ChannelID, response)
+		if err != nil {
+			fmt.Printf("Error sending message: %v", err)
+		}
 	}
 }

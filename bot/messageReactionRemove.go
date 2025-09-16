@@ -19,5 +19,4 @@ func messageReactionRemove(s *discordgo.Session, m *discordgo.MessageReactionRem
 	channel, _ := s.Channel(m.ChannelID)
 	fmt.Printf("%s removed %s from %s's message \"%s\" in %s\n",
 		user.Username, m.Emoji.Name, message.Author, message.Content, channel.Name)
-
 }
