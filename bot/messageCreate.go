@@ -62,7 +62,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			fmt.Printf("Error sending file: %v", err)
 		}
 	} else if fff.MatchString(m.Content) {
-		if m.ChannelID != "rant_town_usa" {
+		if m.ChannelID == "frogboss" {
 			// the mesage contains "fun", "frog[s]?", or "fact", so...
 			// send a random frog fact
 			match := strings.ToLower(fff.FindString(m.Content))
