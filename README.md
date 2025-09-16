@@ -13,6 +13,7 @@ Everyone needs a frogbot
         *   If the bot is mentioned (`@Frogbot`), it provides a response. This can be a "What is best in life?" parody or a random quote from Warcraft II, managed by `frogbot/internal/responses/mentions.go`
         *   If a message contains "frog me" (case-insensitive), the bot sends a random frog image from the `frogbot/frogs/` directory
         *   If a message contains "fun", "frog(s)", or "fact", it sends a fun frog fact, sourced from `frogbot/internal/responses/fff.go`
+          * Now only in the #frogboss channel
         *   If a message is written in ALL CAPS (and isn't "LOL" or "WTF"), it uses the Gemini generative AI model (via `GEMINI_API_KEY`) to formulate a response. This is handled in `frogbot/internal/responses/yelling.go`
     *   **Message Reaction Add (`frogbot/bot/messageReactionAdd.go`)**:
         *   If a user reacts to a message with the 🐸 emoji, the bot responds with "Ribbit!"

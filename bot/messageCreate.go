@@ -23,7 +23,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Log all messages received
 	channel, _ := s.Channel(m.ChannelID)
 	if channel.Name != "" {
-		fmt.Printf("%s wrote: \"%s\" in %s (%s)\n", m.Author, m.Content, channel.Name, m.ChannelID)
+		fmt.Printf("%s wrote: \"%s\" in %s\n", m.Author, m.Content, channel.Name)
 	} else {
 		fmt.Printf("%s DM'd: \"%s\"\n", m.Author, m.Content)
 	}
