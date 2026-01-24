@@ -45,7 +45,7 @@ func YellingResponse(message string, author string) string {
 
 	result, err := client.Models.GenerateContent(
 		ctx,
-		"gemini-2.0-flash",
+		"gemini-3-flash-preview",
 		genai.Text(message),
 		config,
 	)
